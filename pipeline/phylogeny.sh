@@ -98,6 +98,8 @@ if [[ "$TREE_BUILD" == true ]]; then
 	aws s3 cp $WORKSPACE/"$TIMESTAMP"-treebuild.log $S3UPLOAD/phylogeny/$TIMESTAMP/
 fi
 
-grep -v "exit code: 0" $WORKSPACE/"$TIMESTAMP"-phylogeny.exit.log | head -n 1 >> $WORKSPACE/"$TIMESTAMP"-phylogeny.error.log
 bash	$PIPELINEDIR/pipeline/show_version.sh >> $WORKSPACE/"$TIMESTAMP"-phylogeny_version.log
+echo -e "show_version.sh exit code: $?" >> $WORKSPACE/"$TIMESTAMP"-phylogeny.exit.log
+
+grep -v "exit code: 0" $WORKSPACE/"$TIMESTAMP"-phylogeny.exit.log | head -n 1 >> $WORKSPACE/"$TIMESTAMP"-phylogeny.error.log
 aws s3 cp $WORKSPACE/ $S3UPLOAD/phylogeny/$TIMESTAMP/ --recursive --quiet
