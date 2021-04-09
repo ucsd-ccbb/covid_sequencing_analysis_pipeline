@@ -99,6 +99,7 @@ if [[ "$TREE_BUILD" == true ]]; then
 fi
 
 bash	$PIPELINEDIR/pipeline/show_version.sh >> $WORKSPACE/"$TIMESTAMP"-phylogeny_version.log
+echo $(git describe --tags) >> $WORKSPACE/"$TIMESTAMP"-phylogeny_version.log
 echo -e "show_version.sh exit code: $?" >> $WORKSPACE/"$TIMESTAMP"-phylogeny.exit.log
 
 grep -v "exit code: 0" $WORKSPACE/"$TIMESTAMP"-phylogeny.exit.log | head -n 1 >> $WORKSPACE/"$TIMESTAMP"-phylogeny.error.log
