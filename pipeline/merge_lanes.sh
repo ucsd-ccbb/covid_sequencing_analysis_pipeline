@@ -1,6 +1,7 @@
 #!/bin/bash
 
 mkdir -p $WORKSPACE/"$SEQ_RUN"_lane_merged_fastq
+LOGPATH=$WORKSPACE/"$SEQ_RUN"_lane_merged_fastq/"$SEQ_RUN"_merge.log
 
 aws s3 cp $S3DOWNLOAD/ $WORKSPACE/ --recursive --exclude "*" --include "*fastq.gz"
 
@@ -9,7 +10,7 @@ IFS=' ' read -ra SAMPLES_W_LANES_COMBINED <<< "$UNIQ_SAMPLES_W_LANES_COMBINED_ST
 
 # sanity check that arrays are same length
 if [[ ! ${#SAMPLES_WO_LANE_INFO[@]} == ${#SAMPLES_W_LANES_COMBINED[@]} ]] ; then
-   echo "Error: must have same number of sample-without-lane and sample-with-lane-combined entries" >> $WORKSPACE/"$SEQ_RUN"_lane_merged_fastq/"$SEQ_RUN"_merge.log
+   echo "Error: must have same number of sample-without-lane and sample-with-lane-combined entries" >> $LOGPATH
 else
   END=${#SAMPLES_WO_LANE_INFO[@]}
   for (( i=0; i<=$END-1; i++ ))
@@ -21,5 +22,6 @@ else
   done
 fi
 
+bash	$PIPELINEDIR/pipeline/show_version.sh >> $LOGPATH
 aws s3 cp $WORKSPACE/"$SEQ_RUN"_lane_merged_fastq/ $S3DOWNLOAD/"$SEQ_RUN"_lane_merged_fastq/ --recursive --exclude "*" --include "*fastq.gz" --include "*merge.log"
 rm -rf $WORKSPACE
